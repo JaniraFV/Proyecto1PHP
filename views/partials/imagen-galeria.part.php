@@ -1,5 +1,6 @@
-<div id="category1" class="tab-pane active" >
+<div id="<?=$categoryId?>" class="tab-pane <?=($active ? 'active' : '')?>" >
     <div class="row popup-gallery">
+
         <?php foreach ($galeria as $galeryItem):?>
             <div class="col-xs-12 col-sm-6 col-md-3">
                 <div class="sol">
@@ -38,17 +39,21 @@
                       </div>
                   </div>
                 </div>
-                </div> 
-        <?php endforeach?>
-        <nav class="text-center">
-            <ul class="pagination">
-                <li class="active"><a href="#">1</a></li>
-                <li><a href="#">2</a></li>
-                <li><a href="#">3</a></li>
-                <li><a href="#" aria-label="suivant">
-                <span aria-hidden="true">&raquo;</span>
+                
+            </div> 
+            
+
+            <?php endforeach?>
+            <nav class="text-center">
+                <ul class="pagination">
+                    <li class="active"><a href="#">1</a></li>
+                    <li><a href="#">2</a></li>
+                    <li><a href="#">3</a></li>
+                    <li><a href="#" aria-label="suivant">
+                        <span aria-hidden="true">&raquo;</span>
                     </a>
                 </li>
             </ul>
         </nav>
-    </div>
+        </div>
+</div>
