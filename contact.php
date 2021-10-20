@@ -28,7 +28,16 @@ if ("POST" === $_SERVER["REQUEST_METHOD"]){
         $subjectError = true;
     }
 
-    if(sizeof($))
+    if(sizeof($errores)>0){
+        $hayErrores = true;
+    }
+
+    if(!$hayErrores){
+        $info = "Mensaje insertado correctamente: ";
+        $firstName = $lastName = $email = $subject = $message = "";
+    }else{
+        $info = "Datos erroneos";
+    }
 }
 
 include("./views/contact.view.php");
