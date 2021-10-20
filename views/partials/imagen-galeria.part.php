@@ -1,4 +1,4 @@
-<div id="<?=$categoryId?>" class="tab-pane <?=($active ? 'active' : '')?>" >
+<div id="category<?=$categoryId?>" class="tab-pane <?=($active ? 'active' : '')?>" >
     <div class="row popup-gallery">
 
         <?php foreach ($galeria as $galeryItem):?>
