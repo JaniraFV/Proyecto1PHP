@@ -35,7 +35,12 @@
             }
 
             if(!$imagenErr){
-                if(false === move_uploaded_file($_FILES['imagen']['tmp_name'], "/images/index/gallery/" . $_FILES['imagen']['name'])){
+                print_r($_FILES['imagen']);
+                if (file_exists($_FILES['imagen']['tmp_name'])){
+                    echo "existe";
+                }
+                echo "/images/index/gallery/" . $_FILES['imagen']['name'];
+                if(false === copy($_FILES['imagen']['tmp_name'], "images/index/gallery/" . $_FILES['imagen']['name'])){
                     $errores[] = 'Se ha producido un error al mover la imagen';
                     $imagenErr = true;
                 }
