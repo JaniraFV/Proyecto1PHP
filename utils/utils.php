@@ -29,3 +29,15 @@ function sanitizeInput(string $data): string
 
     return $data;
 }
+
+function getAsociados(array $asociados) : array{
+
+    if(sizeof($asociados)>3){
+        shuffle($asociados);
+        return array_slice($asociados, 0, 3);
+    }else{
+        return $asociados;
+    }
+
+
+}

@@ -16,5 +16,13 @@ $galeria[]=new ImagenGaleria("10.jpg", "Descripcion img 10", 16, 56, 6);
 $galeria[]=new ImagenGaleria("11.jpg", "Descripcion img 11", 14, 5, 68);
 $galeria[]=new ImagenGaleria("12.jpg", "Descripcion img 12", 1, 55, 6);
 
+require_once "./entity/Asociado.php";
 
+$asociados[]=new Asociado("Asociado1", "Descripcion 1", "./images/clients/client1.jpg");
+$asociados[]=new Asociado("Asociado2", "Descripcion 2", "./images/clients/client2.jpg");
+$asociados[]=new Asociado("Asociado3", "Descripcion 3", "./images/clients/client3.jpg");
+$asociados[]=new Asociado("Asociado4", "Descripcion 4", "./images/clients/client4.jpg");
+
+$asociados = getAsociados($asociados);
+print_r($asociados);
 include("./views/index.view.php");
