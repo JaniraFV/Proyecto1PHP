@@ -3,6 +3,8 @@
 class Asociado
 {
 
+    const RUTA_IMAGENES_ASOCIADOS = "images/index";
+
     /**
      * @var string
      */
