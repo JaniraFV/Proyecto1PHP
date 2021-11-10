@@ -1,10 +1,8 @@
-<?php
+<?php 
 
 class Asociado
 {
-
-    const RUTA_IMAGENES_ASOCIADOS = "images/index";
-
+    const RUTA_IMAGENES_ASOCIADO = 'images/index/';
     /**
      * @var string
      */
@@ -13,22 +11,23 @@ class Asociado
     /**
      * @var string
      */
-    private $descripcion;
+    private $logo;
 
     /**
      * @var string
      */
-    private $logo;
+    private $descripcion;
 
-
-    public function __construct(string $nombre, string $descripcion, string $logo )
-    {
-$this->nombre = $nombre;
-$this->descripcion = $descripcion;
-$this->logo = $logo;
+    /**
+     * @param string $nombre
+     * @param string $logo
+     * @param string $descripcion
+     */
+    public function __construct(string $nombre, string $logo, string $descripcion = ""){
+        $this->nombre = $nombre;
+        $this->logo = $logo;
+        $this->descripcion = $descripcion;
     }
-
-
 
     /**
      * Get the value of nombre
@@ -50,6 +49,30 @@ $this->logo = $logo;
     public function setNombre(string $nombre)
     {
         $this->nombre = $nombre;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of logo
+     *
+     * @return  string
+     */ 
+    public function getLogo()
+    {
+        return $this->logo;
+    }
+
+    /**
+     * Set the value of logo
+     *
+     * @param  string  $logo
+     *
+     * @return  self
+     */ 
+    public function setLogo(string $logo)
+    {
+        $this->logo = $logo;
 
         return $this;
     }
@@ -79,26 +102,12 @@ $this->logo = $logo;
     }
 
     /**
-     * Get the value of logo
+     * Devuelve el path a las imágenes del asociado
      *
-     * @return  string
-     */ 
-    public function getLogo()
+     * @return string
+     */
+    public function getUrlImagen() : string
     {
-        return $this->logo;
-    }
-
-    /**
-     * Set the value of logo
-     *
-     * @param  string  $logo
-     *
-     * @return  self
-     */ 
-    public function setLogo(string $logo)
-    {
-        $this->logo = $logo;
-
-        return $this;
+        return self::RUTA_IMAGENES_ASOCIADO . $this->getLogo();
     }
 }

@@ -1,52 +1,8 @@
 <?php
-
 class ImagenGaleria
 {
-    
-const RUTA_IMAGENES_PORTFOLIO = 'images/index/portfolio/';
-const RUTA_IMAGENES_GALLERY = 'images/index/gallery/';
-
-//....  
-
-/**
-
- * Devuelve el path a las imágenes del portfolio
-
- *
-
- * @return string
-
- */
-
-public function getUrlPortfolio() : string
-
-{
-
-    return self::RUTA_IMAGENES_PORTFOLIO . $this->getNombre();
-
-}
-
-/**
-
- * Devuelve el path a las imágenes de la galería
-
- *
-
- * @return string
-
- */
-
-public function getUrlGallery() : string
-
-{
-
-    return self::RUTA_IMAGENES_GALLERY . $this->getNombre();
-
-}
-
-
-
-
+    const RUTA_IMAGENES_PORTFOLIO = 'images/index/portfolio/';
+    const RUTA_IMAGENES_GALLERY = 'images/index/gallery/';
     /**
      * @var string
      */
@@ -56,12 +12,12 @@ public function getUrlGallery() : string
      * @var string
      */
     private $descripcion;
-
+    
     /**
      * @var int
      */
-    private $numViews;
-
+    private $numVisualizaciones;
+    
     /**
      * @var int
      */
@@ -71,15 +27,17 @@ public function getUrlGallery() : string
      * @var int
      */
     private $numDownloads;
+    
 
-    public function __construct(string $nombre, string $descripcion, int $numViews = 0,
-                                int $numLikes = 0, int $numDownloads = 0 )
-    {
-$this->nombre = $nombre;
-$this->descripcion = $descripcion;
-$this->numViews = $numViews;
-$this->numLikes = $numLikes;
-$this->numDownloads = $numDownloads;
+    public function __construct(string $nombre, string $descripcion,
+                                int $numVisualizaciones = 0, int $numLikes = 0,
+                                int $numDownloads = 0){
+        $this->nombre = $nombre;
+        $this->descripcion = $descripcion;
+        $this->numVisualizaciones = $numVisualizaciones;
+        $this->numLikes = $numLikes;
+        $this->numDownloads = $numDownloads;
+
     }
 
     /**
@@ -131,25 +89,25 @@ $this->numDownloads = $numDownloads;
     }
 
     /**
-     * Get the value of numViews
+     * Get the value of numVisualizaciones
      *
      * @return  int
      */ 
-    public function getNumViews()
+    public function getNumVisualizaciones()
     {
-        return $this->numViews;
+        return $this->numVisualizaciones;
     }
 
     /**
-     * Set the value of numViews
+     * Set the value of numVisualizaciones
      *
-     * @param  int  $numViews
+     * @param  int  $numVisualizaciones
      *
      * @return  self
      */ 
-    public function setNumViews(int $numViews)
+    public function setNumVisualizaciones(int $numVisualizaciones)
     {
-        $this->numViews = $numViews;
+        $this->numVisualizaciones = $numVisualizaciones;
 
         return $this;
     }
@@ -200,5 +158,25 @@ $this->numDownloads = $numDownloads;
         $this->numDownloads = $numDownloads;
 
         return $this;
+    }
+    
+    /**
+     * Devuelve el path a las imágenes del portfolio
+     *
+     * @return string
+     */
+    public function getUrlPortfolio() : string
+    {
+        return self::RUTA_IMAGENES_PORTFOLIO . $this->getNombre();
+    }
+
+    /**
+     * Devuelve el path a las imágenes de la galería
+     *
+     * @return string
+     */
+    public function getUrlGallery() : string
+    {
+        return self::RUTA_IMAGENES_GALLERY . $this->getNombre();
     }
 }
