@@ -60,8 +60,26 @@
               ->toFile(ImagenGaleria::RUTA_IMAGENES_GALLERY . $file->getFileName()); 
               $info = 'Imagen enviada correctamente'; 
               $urlImagen = ImagenGaleria::RUTA_IMAGENES_GALLERY . $file->getFileName();
+
+            $sql = "INSERT INTO imagenes (nombre, descripcion) VALUES (:nombre, :descripcion)";
+
+            $pdoStatement = $connection ->prepare($sql);
+            $parameters = [':nombre' => $file -> getFileName(),
+                            ':descripcion' => $description->getValue()];
+
+            if(false === $pdoStatement->execute($parameters)){
+              $form->addError('No se ha podido guardar la imagen en la BBDD');
+            }else{
+              $info = 'Imagen enviada correctamente';
               $form->reset();
-            
+            }
+
+
+
+
+
+
+
           }catch(Exception $err) {
               $form->addError($err->getMessage());
               $imagenErr = true;
