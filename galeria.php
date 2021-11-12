@@ -13,6 +13,12 @@
     require_once "./exceptions/FileException.php";
     require_once "./utils/SimpleImage.php";
     require_once "./entity/ImagenGaleria.php";
+    require_once "./database/QueryBuilder.php";
+    require_once "./database/Connection.php";
+
+    $config = require_once './app/config.php';
+
+    $connection = Connection::make($config['database']);
     
     $info = $urlImagen = "";
 
@@ -44,6 +50,12 @@
     ->appendChild($file)
     ->appendChild($descriptionWrapper)
     ->appendChild($b);
+
+
+
+
+
+
 
     if ("POST" === $_SERVER["REQUEST_METHOD"]) {
         $form->validate();
@@ -84,8 +96,18 @@
               $form->addError($err->getMessage());
               $imagenErr = true;
           }
-        }else{
-          
         }
+
+
+
     }
+
+    $queryBuilder = new QueryBuilder($connection);
+    try{
+      $imagenes = $queryBuilder->findAll('imagenes', 'ImagenGaleria');
+    }catch(QueryException $qe){
+      $imagenes= [];
+      die($qe->getMessage());
+    }
+
     include("./views/galeria.view.php");
