@@ -15,12 +15,21 @@
     require_once "./entity/ImagenGaleria.php";
     require_once "./database/QueryBuilder.php";
     require_once "./database/Connection.php";
+    require_once "./core/App.php";
+    require_once "./repository/ImagenGaleriaRepository.php";
 
-    $config = require_once './app/config.php';
+    require_once "./exceptions/AppException.php";
 
-    $connection = Connection::make($config['database']);
+    $config = require_once "app/config.php";
+    App::bind("config", $config);
+    App::bind("connection", Connection::make($config["database"]));
     
-    $info = $urlImagen = "";
+    $repositorio = new ImagenGaleriaRepository();
+
+
+
+
+   $info = $urlImagen = "";
 
     $description = new TextareaElement();
     $description
@@ -73,11 +82,8 @@
               $info = 'Imagen enviada correctamente'; 
               $urlImagen = ImagenGaleria::RUTA_IMAGENES_GALLERY . $file->getFileName();
 
-            $sql = "INSERT INTO imagenes (nombre, descripcion) VALUES (:nombre, :descripcion)";
-
-            $pdoStatement = $connection ->prepare($sql);
-            $parameters = [':nombre' => $file -> getFileName(),
-                            ':descripcion' => $description->getValue()];
+              $imagenGaleria = new ImagenGaleria($file->getFileName(), $description->getValue());
+              $repositorio->save($imagenGaleria);
 
             if(false === $pdoStatement->execute($parameters)){
               $form->addError('No se ha podido guardar la imagen en la BBDD');
@@ -85,29 +91,17 @@
               $info = 'Imagen enviada correctamente';
               $form->reset();
             }
-
-
-
-
-
-
-
           }catch(Exception $err) {
               $form->addError($err->getMessage());
               $imagenErr = true;
           }
         }
-
-
-
     }
 
-    $queryBuilder = new QueryBuilder($connection);
     try{
-      $imagenes = $queryBuilder->findAll('imagenes', 'ImagenGaleria');
+      $imagenes = $repositorio->findAll('imagenes', 'ImagenGaleria');
     }catch(QueryException $qe){
       $imagenes= [];
       die($qe->getMessage());
     }
-
     include("./views/galeria.view.php");
