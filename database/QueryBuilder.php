@@ -49,22 +49,7 @@ abstract class QueryBuilder
     public function findAll(){
 
         $sql = "SELECT * FROM $this->table";
-
-        try {
-
-            $pdoStatement = $this->connection->prepare($sql);
-
-            $pdoStatement->execute();
-
-            $pdoStatement->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, $this->classEntity);
-
-            return $pdoStatement->fetchAll();
-
-        }catch(\PDOException $pdoException){
-
-            throw new QueryException('No se ha podido ejecutar la consulta solicitada: ' . $pdoException->getMessage());
-
-        }
+        return $this->executeQuery($sql);
 
     }
 
@@ -78,7 +63,7 @@ abstract class QueryBuilder
      try{
          $parameters = $entity->toArray();
          $sql = sprintf(
-             'INSERT INTO %s ($s) values (%s)',
+             'INSERT INTO %s (%s) values (%s)',
              $this->table,
              implode(', ', array_keys($parameters)), ':'. implode(', :', array_keys($parameters))
          );
@@ -90,6 +75,48 @@ abstract class QueryBuilder
          throw new QueryException("Error al insertar en la base de datos: " . $pdoException->getMessage());
      }
  }
+
+
+public function executeQuery(string $sql){
+    try{
+        $pdoStatement = $this->connection->prepare($sql);
+        $pdoStatement-> execute();
+        $pdoStatement->setFetchMode(\PDO::FETCH_CLASS | \PDO::FETCH_PROPS_LATE, $this->classEntity);
+        return $pdoStatement->fetchAll();
+
+    }catch(\PDOException $pdoException){
+        throw new QueryException('No se ha podido ejecutar la consulta solicitada: ' . $pdoException->getMessage());
+    }
+}
+
+
+public function findById(int $id){
+    $sql = "SELECT * FROM $this->table WHERE id = $id";
+    $result = $this->executeQuery($sql);
+
+    if (empty($result)){
+        throw new NotFoundException("No se ha encontrado ningun elemento con id $id");
+    }
+    return $result[0];
+}
+
+
+public function executeTransaction(callable $fnExecuteQuerys){
+    try{
+        $this->connection->beginTransaction();
+        $fnExecuteQuerys();
+        $this->connection->commit();
+
+    }catch (\PDOException $pdoException){
+        $this->connection->rollBack();
+        throw new QueryException("No se ha podido realizar la operacion: " . $pdoException->getMessage());
+    }
+}
+
+
+/**
+ * 
+ */
 
 
 } 

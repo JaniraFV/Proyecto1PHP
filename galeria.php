@@ -17,14 +17,33 @@
     require_once "./database/Connection.php";
     require_once "./core/App.php";
     require_once "./repository/ImagenGaleriaRepository.php";
-
     require_once "./exceptions/AppException.php";
+    require_once "./utils/Forms/SelectElement.php";
+    require_once "./utils/Forms/OptionElement.php";
+    require_once "./repository/CategoriaRepository.php";
 
     $config = require_once "app/config.php";
     App::bind("config", $config);
     App::bind("connection", Connection::make($config["database"]));
     
     $repositorio = new ImagenGaleriaRepository();
+
+    $repositorioCategoria = new CategoriaRepository();
+
+    $categoriasEl = new SelectElement(false);
+
+
+    $categoriasEl
+      ->setName('categoria');
+      $categorias = $repositorioCategoria->findAll();
+      foreach ($categorias as $categoria){
+        $option = new OptionElement($categoriasEl, $categoria->getNombre());
+        $option->setDefaultValue($categoria->getId());
+        $categoriasEl->appendChild($option);
+      }
+
+
+    $categoriaWrapper = new MyFormControl($categoriasEl, 'Categoria', 'col-xs-12');
 
 
 
@@ -58,6 +77,7 @@
     ->appendChild($labelFile)
     ->appendChild($file)
     ->appendChild($descriptionWrapper)
+    ->appendChild($categoriaWrapper)
     ->appendChild($b);
 
 
@@ -82,15 +102,11 @@
               $info = 'Imagen enviada correctamente'; 
               $urlImagen = ImagenGaleria::RUTA_IMAGENES_GALLERY . $file->getFileName();
 
-              $imagenGaleria = new ImagenGaleria($file->getFileName(), $description->getValue());
+              $imagenGaleria = new ImagenGaleria($file->getFileName(), $description->getValue(), 0, 0, 0, $categoriasEl->getValue());
               $repositorio->save($imagenGaleria);
-
-            if(false === $pdoStatement->execute($parameters)){
-              $form->addError('No se ha podido guardar la imagen en la BBDD');
-            }else{
-              $info = 'Imagen enviada correctamente';
               $form->reset();
-            }
+
+            
           }catch(Exception $err) {
               $form->addError($err->getMessage());
               $imagenErr = true;
