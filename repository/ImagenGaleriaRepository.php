@@ -34,4 +34,21 @@ public function nuevaImagen(Categoria $categoria){
 }
 
 
+/**
+ * @param Entity $imagenGaleria
+ * @throws QueryException
+ */
+
+ public function save(Entity $imagenGaleria)
+ {
+     $fnGuardaImagen = function() use ($imagenGaleria){
+         $categoria = $this->getCategoria($imagenGaleria);
+         $categoriaRepositorio = new CategoriaRepository();
+         $categoriaRepositorio->nuevaImagen($categoria);
+         parent::save($imagenGaleria);
+     };
+     $this->executeTransaction($fnGuardaImagen);
+ }
+
+
 }
