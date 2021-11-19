@@ -15,11 +15,14 @@
     require_once "./utils/SimpleImage.php";
     require_once "./entity/Asociado.php";
     require_once "./core/App.php";
+    require_once "./repository/AsociadoRepository.php";
 
     $config = require_once "app/config.php";
     App::bind("config", $config);
     App::bind("connection", Connection::make($config["database"]));
-    
+    $repositorio = new AsociadoRepository();
+
+
     $info = $urlImagen = "";
 
     $nombre = new InputElement('text');
@@ -62,7 +65,7 @@
         $form->validate();
         if (!$form->hasError()) {
           try {
-            $file->saveUploadedFile(Asociado::RUTA_IMAGENES_ASOCIADO);  
+              $file->saveUploadedFile(Asociado::RUTA_IMAGENES_ASOCIADO);  
               // Create a new SimpleImage object
               $simpleImage = new \claviska\SimpleImage();
               $simpleImage
@@ -71,8 +74,10 @@
               ->toFile(Asociado::RUTA_IMAGENES_ASOCIADO . $file->getFileName());
               $info = 'Imagen enviada correctamente'; 
               $urlImagen = Asociado::RUTA_IMAGENES_ASOCIADO . $file->getFileName();
-              $form->reset();
-            
+             
+              $asociado = new Asociado($nombre->getValue(), $file->getFileName(), $description->getValue());
+              $repositorio->save($asociado);
+              $form->reset(); 
           }catch(Exception $err) {
               $form->addError($err->getMessage());
               $imagenErr = true;
