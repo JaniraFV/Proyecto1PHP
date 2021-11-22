@@ -30,10 +30,6 @@ class Mensaje extends Entity
      */
     private $texto;
 
-    /**
-     * @var string
-     */
-    private $fecha;
 
     /**
      * @var string
@@ -46,16 +42,14 @@ class Mensaje extends Entity
      * @param string $asunto
      * @param string $email
      * @param string $texto
-     * @param string $fecha
      */
-    public function __construct(string $nombre="", string $apellidos="", string $asunto = "", string $email = "", string $texto = "", string $fecha = ""){
+    public function __construct(string $nombre="", string $apellidos="", string $asunto = "", string $email = "", string $texto = ""){
         $this->id = null;
         $this->nombre = $nombre;
         $this->apellidos = $apellidos;
         $this->asunto = $asunto;
         $this->email = $email;
         $this->texto = $texto;
-        $this->fecha = $fecha;
     }
 
 
@@ -68,9 +62,13 @@ class Mensaje extends Entity
     
             'nombre' => $this->getNombre(),
     
-            'logo' => $this->getLogo(),
+            'apellidos' => $this->getApellidos(),
     
-            'descripcion' => $this->getDescripcion()
+            'asunto' => $this->getAsunto(),
+
+            'email' => $this->getEmail(),
+
+            'texto' => $this->getTexto()
     
         ];
     
@@ -220,29 +218,7 @@ class Mensaje extends Entity
         return $this;
     }
 
-    /**
-     * Get the value of fecha
-     *
-     * @return  string
-     */ 
-    public function getFecha()
-    {
-        return $this->fecha;
-    }
 
-    /**
-     * Set the value of fecha
-     *
-     * @param  string  $fecha
-     *
-     * @return  self
-     */ 
-    public function setFecha(string $fecha)
-    {
-        $this->fecha = $fecha;
-
-        return $this;
-    }
 }
 
 
