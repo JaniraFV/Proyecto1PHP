@@ -14,7 +14,7 @@ abstract class QueryBuilder
 
     
 
-    private $connection;
+    protected $connection;
 
     /**
 
@@ -22,7 +22,7 @@ abstract class QueryBuilder
 
      */
 
-    private $table;
+    protected $table;
 
     /**
 
@@ -30,7 +30,7 @@ abstract class QueryBuilder
 
      */
 
-    private $classEntity;
+    protected $classEntity;
 
     public function __construct(string $table, string $classEntity)
 

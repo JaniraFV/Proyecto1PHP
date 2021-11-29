@@ -16,6 +16,8 @@ require_once "./utils/Validator/MinDigitValidator.php";
 require_once "./entity/Usuario.php";
 require_once "./database/Connection.php";
 require_once "./repository/UsuarioRepository.php";
+require_once "./security/PlainPasswordGenerator.php";
+require_once "./security/BCryptPasswordGenerator.php";
 
 require_once "./core/App.php";
 $info = "";
@@ -23,45 +25,76 @@ $config = require_once 'app/config.php';
 App::bind('config', $config);
 App::bind('connection', Connection::make($config['database']));
 
-$repositorio = new UsuarioRepository();
+$repositorio = new UsuarioRepository(new BCryptPasswordGenerator());
 
-$nombreUsuario = new InputElement('username', 'text', 'username');
-$nombreUsuario->setValidator(new NotEmptyValidator('El nombre de usuari@ no puede estar vacío', true));
 
-$userWrapper = new MyFormControl($nombreUsuario, 'Nombre de usuari@', 'col-xs-12');
+    $info = "";
 
-$email = new EmailElement('email', 'email');
+    $nombreUsuario = new InputElement('text');
 
-$emailWrapper = new MyFormControl($email, 'Correo electrónico', 'col-xs-12');
+    $nombreUsuario
 
-$pv = new NotEmptyValidator('La contraseña no puede estar vacía', true);
-$mlv = new MinLengthValidator(6, 'La contraseña debe tener al menos 6 caracteres', false);
-$mlcv =  new MinLowerCaseValidator(2, 'La contraseña debe tener al menos 2 letras minúsculas', false);
-$mdv =  new MinDigitValidator(2, 'La contraseña debe tener al menos 2 dígitos', false);
+      ->setName('username')
 
-$mlcv->setNextValidator($mdv);
-$mlv->setNextValidator($mlcv);
-$pv->setNextValidator($mlv);
+      ->setId('username');
 
-$pass = new PasswordElement('password', 'password');
-$pass->setValidator($pv);
+    $nombreUsuario->setValidator(new NotEmptyValidator('El nombre de usuari@ no puede estar vacío', true));
 
-$passWrapper = new MyFormControl($pass, 'Contraseña', 'col-xs-12');
+    $userWrapper = new MyFormControl($nombreUsuario, 'Nombre de usuari@', 'col-xs-12');
 
-$repite = new PasswordElement('repite_password', 'repite_password');
-$repite->setValidator(new PasswordMatchValidator($pass, 'Las contraseñas no coinciden', true));
+    $email = new EmailElement();
 
-$repiteWrapper = new MyFormControl($repite, 'Repita la contraseña', 'col-xs-12');
+    $email
 
-$b = new ButtonElement('Registro', '', '', 'pull-right btn btn-lg sr-button');
+      ->setName('email')
 
-$form = new FormElement((!empty($hrefReturnToUrl) ? '?returnToUrl=' . $hrefReturnToUrl : ''));
-$form
-  ->appendChild($userWrapper)
-  ->appendChild($emailWrapper)
-  ->appendChild($passWrapper)
-  ->appendChild($repiteWrapper)
-  ->appendChild($b);
+      ->setId('email');
+
+    $emailWrapper = new MyFormControl($email, 'Correo electrónico', 'col-xs-12');
+
+    $pv = new NotEmptyValidator('La contraseña no puede estar vacía', true);
+
+    $pass = new PasswordElement();
+
+    $pass
+
+    ->setName('password')
+
+    ->setId('password');
+
+    
+
+    $pass->setValidator($pv);
+
+    $passWrapper = new MyFormControl($pass, 'Contraseña', 'col-xs-12');
+
+    $repite = new PasswordElement();
+
+    $repite
+
+    ->setName('repite_password')
+
+    ->setId('repite_password');
+
+    $repite->setValidator(new PasswordMatchValidator($pass, 'Las contraseñas no coinciden', true));
+
+    $repiteWrapper = new MyFormControl($repite, 'Repita la contraseña', 'col-xs-12');
+
+    $b = new ButtonElement('Registro', '', '', 'pull-right btn btn-lg sr-button');
+
+    $form = new FormElement();
+
+    $form
+
+      ->appendChild($userWrapper)
+
+      ->appendChild($emailWrapper)
+
+      ->appendChild($passWrapper)
+
+      ->appendChild($repiteWrapper)
+
+      ->appendChild($b);
 
 
   if("POST" === $_SERVER["REQUEST_METHOD"]){
@@ -74,9 +107,23 @@ $form
               $_SESSION['username'] = $nombreUsuario->getValue();
               header('location: /');
           }catch(QueryException $qe){
-              $form->addError($qe->getMessage());
+            $exception = $qe->getMessage();
+            if((strpos($exception, '1062') !== false)){
+                if((strpos($exception, 'username') !== false)){
+                    $form->addError('Ya existe un usario registrado con ese nombre de usuario.');
+                }else if((strpos($exception, 'email') !== false)){
+                    $form->addError('Ya existe un usario registrado con ese correo electronico.');
+                }else{
+                    $form->addError($qe->getMessage());
+                }
+            }else{
+                $form->addError($qe->getMessage());
+            }
+
           }catch(Exception $err){
             $form->addError($err->getMessage());
           }
       }
   }
+
+  require_once "./views/register.view.php";
